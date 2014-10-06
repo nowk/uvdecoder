@@ -3,12 +3,12 @@ package uvdecoder
 import "reflect"
 import "github.com/mitchellh/mapstructure"
 
-// Hook is a decode hook for mapstructure to help properly map url.Values to a
-// struct.
+// DecodeHook is a decode hook for mapstructure to help properly map url.Values
+// to a struct.
 // Because url.Values is a map[string][]string, mapstructure skips any non slice
 // string conversions.
 // This requires WeaklyTypedInput = true
-func Hook(f, t reflect.Kind, data interface{}) (interface{}, error) {
+func DecodeHook(f, t reflect.Kind, data interface{}) (interface{}, error) {
 	if reflect.Slice != t {
 		switch f {
 		case reflect.Slice:
@@ -20,10 +20,10 @@ func Hook(f, t reflect.Kind, data interface{}) (interface{}, error) {
 	return data, nil
 }
 
-// Config returns a preconfigured DecoderConfig for Hook
+// Config returns a preconfigured DecoderConfig for DecodeHook
 func Config(d interface{}) *mapstructure.DecoderConfig {
 	return &mapstructure.DecoderConfig{
-		DecodeHook:       Hook,
+		DecodeHook:       DecodeHook,
 		Result:           d,
 		WeaklyTypedInput: true,
 	}
